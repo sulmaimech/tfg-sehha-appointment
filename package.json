@@ -1,0 +1,34 @@
+{
+  "name": "sehha-appointment",
+  "version": "1.0.0",
+  "description": "This is the microservice that is responsible for managing the appointments of SEHHA",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/souel22/sehha-appointment.git"
+  },
+  "keywords": [
+    "sehha",
+    "health",
+    "telemedicine",
+    "video-consultancy",
+    "e-health",
+    "appointments"
+  ],
+  "author": "Soulaiman El Maimouni Mechbal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/souel22/sehha-appointment/issues"
+  },
+  "homepage": "https://github.com/souel22/sehha-appointment#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongodb": "^5.7.0",
+    "mongoose": "^7.3.4"
+  }
+}
