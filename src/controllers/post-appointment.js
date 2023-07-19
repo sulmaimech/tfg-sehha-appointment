@@ -1,4 +1,4 @@
-export default function makePostAppoitemnt({ createAppointement }) {
+export default function makePostAppoitemnt(createAppointement) {
   // this class will return a postAppointemnt function that will be the controller that will handle the http requests related to creating an Appointment
   return async function postAppointemnt(httpRequest) {
     const headers = {
@@ -28,10 +28,11 @@ export default function makePostAppoitemnt({ createAppointement }) {
         headers,
         statusCode: 201,
         body: {
-          appointment,
+          id: appointment.getId(),
         },
       };
     } catch (e) {
+      console.error(e);
       return {
         headers,
         statusCode: 400,

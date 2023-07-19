@@ -17,7 +17,7 @@ export default function makeMongodbRepository() {
       videoAppointment,
     }) => {
       try {
-        return await Appointment.create({
+        const { _doc } = await Appointment.create({
           date,
           duration,
           visitType,
@@ -27,6 +27,8 @@ export default function makeMongodbRepository() {
           professional,
           videoAppointment,
         });
+
+        return { id: _doc._id, ..._doc };
       } catch (error) {
         console.log("Error while creating appointment", error);
       }

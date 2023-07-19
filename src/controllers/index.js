@@ -7,7 +7,7 @@ import {
   joinAppointment,
 } from "../use-cases/index.js";
 
-const postAppointemnt = makePostAppointment({ createAppointment });
+const postAppointemnt = makePostAppointment(createAppointment);
 
 export default Object.freeze({ postAppointemnt });
 
