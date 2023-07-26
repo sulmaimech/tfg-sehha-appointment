@@ -33,5 +33,54 @@ export default function makeMongodbRepository() {
         console.log("Error while creating appointment", error);
       }
     },
+    cancel: async (appointmentId) => {
+      try {
+        const appointment = await Appointment.findByIdAndUpdate(
+          appointmentId,
+          {
+            status: "cancelled",
+          },
+          {
+            new: true,
+            runValidators: true,
+          }
+        );
+        return appointment;
+      } catch (error) {
+        console.log(
+          `Error while cancelling appointment with ID ${appointmentId}`,
+          error
+        );
+      }
+    },
+    edit: async (appointmentId, appointmentFields) => {
+      try {
+        const appointment = await Appointment.findByIdAndUpdate(
+          appointmentId,
+          appointmentFields,
+          {
+            new: true,
+            runValidators: true,
+          }
+        );
+        return appointment;
+      } catch (error) {
+        console.log(
+          `Error while editing appointment with ID ${appointmentId}`,
+          error
+        );
+      }
+    },
+    listById: async (appointmentId) => {
+      try {
+        const appointment = await Appointment.findById(appointmentId);
+        return appointment;
+      } catch (error) {
+        console.log(
+          `Error while listing appointment with ID ${appointmentId}`,
+          error
+        );
+      }
+    },
   };
 }
