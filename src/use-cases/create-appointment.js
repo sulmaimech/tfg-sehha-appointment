@@ -1,6 +1,6 @@
 import makeAppointment from "../entity/index.js";
 
-export default function makeCreateAppointment({ appointmentRepository }) {
+export default function makeCreateAppointment(appointmentRepository) {
   return async function createAppointment({
     date,
     duration,

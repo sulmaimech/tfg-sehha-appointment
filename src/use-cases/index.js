@@ -9,12 +9,12 @@ import makeAppointmentRepository from "../repositories/appointment-repository.js
 const type = "mongodb";
 const appointmentRepository = makeAppointmentRepository({ type });
 
-const createAppointment = makeCreateAppointment({ appointmentRepository });
-const cancelAppointment = makeCancelAppointment({ appointmentRepository });
-const editAppointment = makeEditAppointment({ appointmentRepository });
-const listAppointmentById = makeListAppointmentById({ appointmentRepository });
-const listAppointments = makeListAppointments({ appointmentRepository });
-const joinAppointment = makeJoinAppointment({ appointmentRepository });
+const createAppointment = makeCreateAppointment(appointmentRepository);
+const cancelAppointment = makeCancelAppointment(appointmentRepository);
+const editAppointment = makeEditAppointment(appointmentRepository);
+const listAppointmentById = makeListAppointmentById(appointmentRepository);
+const listAppointments = makeListAppointments(appointmentRepository);
+const joinAppointment = makeJoinAppointment(appointmentRepository);
 
 const appointemntService = Object.freeze({
   createAppointment,

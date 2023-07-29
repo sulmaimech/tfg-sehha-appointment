@@ -82,5 +82,13 @@ export default function makeMongodbRepository() {
         );
       }
     },
+    listByFilter: async () => {
+      try {
+        const appointments = await Appointment.find();
+        return appointments;
+      } catch (error) {
+        console.log(`Error while listing appointments with filter `, error);
+      }
+    },
   };
 }
