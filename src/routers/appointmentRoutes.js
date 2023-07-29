@@ -4,6 +4,7 @@ import {
   postAppointemnt,
   updateAppointment,
   getAppointment,
+  deleteAppointment,
 } from "../controllers/index.js";
 import makeExpressCallback from "../utils/makeExpressCallback.js";
 
@@ -18,6 +19,7 @@ router
 router
   .route("/:id")
   .patch(makeExpressCallback(updateAppointment))
-  .get(makeExpressCallback(getAppointment));
+  .get(makeExpressCallback(getAppointment))
+  .delete(makeExpressCallback(deleteAppointment));
 
 export default router;

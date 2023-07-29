@@ -90,5 +90,16 @@ export default function makeMongodbRepository() {
         console.log(`Error while listing appointments with filter `, error);
       }
     },
+    deleteById: async (appointmentId) => {
+      try {
+        const appointment = await Appointment.findByIdAndDelete(appointmentId);
+        return appointment;
+      } catch (error) {
+        console.log(
+          `Error while deleting appointment with ID ${appointmentId}`,
+          error
+        );
+      }
+    },
   };
 }

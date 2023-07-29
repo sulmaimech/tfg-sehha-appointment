@@ -3,6 +3,7 @@ import makeCancelAppointment from "./cancel-appointment.js";
 import makeEditAppointment from "./edit-appointment.js";
 import makeListAppointmentById from "./list-appointment-by-id.js";
 import makeListAppointments from "./list-appointments.js";
+import makeDeleteAppointmentById from "./delete-appointmet.js";
 import makeJoinAppointment from "./join-appointment.js";
 import makeAppointmentRepository from "../repositories/appointment-repository.js";
 
@@ -14,6 +15,7 @@ const cancelAppointment = makeCancelAppointment(appointmentRepository);
 const editAppointment = makeEditAppointment(appointmentRepository);
 const listAppointmentById = makeListAppointmentById(appointmentRepository);
 const listAppointments = makeListAppointments(appointmentRepository);
+const deleteAppointmentById = makeDeleteAppointmentById(appointmentRepository);
 const joinAppointment = makeJoinAppointment(appointmentRepository);
 
 const appointemntService = Object.freeze({
@@ -22,6 +24,7 @@ const appointemntService = Object.freeze({
   editAppointment,
   listAppointmentById,
   listAppointments,
+  deleteAppointmentById,
   joinAppointment,
 });
 
@@ -33,5 +36,6 @@ export {
   editAppointment,
   listAppointmentById,
   listAppointments,
+  deleteAppointmentById,
   joinAppointment,
 };
