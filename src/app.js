@@ -6,5 +6,6 @@ app.use(express.json());
 
 //
 app.use("/api/v1/appointments", router);
+console.log(router.stack.map(r => r.route.path))
 
 export default app;

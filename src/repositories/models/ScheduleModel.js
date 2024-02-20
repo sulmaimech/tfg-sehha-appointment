@@ -1,17 +1,10 @@
 import mongoose from "mongoose";
-import Appointment from "./AppointmentModel.js";
-import Professional from "./ProfessionalModel.js";
 
-// Define the schedule schema
 const scheduleSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  appointments: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: Appointment,
-    },
-  ],
-  professional: { type: mongoose.Schema.Types.ObjectId, ref: Professional },
+  specialist: { type: mongoose.Schema.Types.ObjectId, ref: 'Specialist', required: true },
+  slots: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ScheduleSlot' }],
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 });
 
-export default mongoose.model("Schedule", scheduleSchema);
+export default mongoose.model('Schedule', scheduleSchema);

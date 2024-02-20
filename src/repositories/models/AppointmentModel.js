@@ -1,17 +1,14 @@
-import mongoose from "mongoose";
-import Patient from "./PatientModel.js";
-import Professional from "./ProfessionalModel.js";
+import mongoose  from 'mongoose';
 
-const appointmentSchema = mongoose.Schema({
-  id: { type: mongoose.Schema.Types.ObjectId },
-  date: { type: String },
-  duration: { type: Number, required: true },
-  visitType: { type: String, required: true },
-  visitReason: { type: String, required: true },
-  status: { type: String, required: true },
-  patient: { type: mongoose.Schema.Types.ObjectId, ref: Patient },
-  professional: { type: mongoose.Schema.Types.ObjectId, ref: Professional },
-  videoAppointment: { type: String },
+const appointmentSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  specialist: { type: mongoose.Schema.Types.ObjectId, ref: 'Specialist' },
+  speciality: { type: mongoose.Schema.Types.ObjectId, ref: 'Speciality' },
+  scheduleSlot: { type: mongoose.Schema.Types.ObjectId, ref: 'ScheduleSlot' },
+  status: { type: String, enum: ['scheduled', 'completed', 'canceled'], default: 'scheduled' },
+  appointmentDate: { type: Date, required: true },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 });
 
-export default mongoose.model("Appointment", appointmentSchema);
+export default mongoose.model('Appointment', appointmentSchema);

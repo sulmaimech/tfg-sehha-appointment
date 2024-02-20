@@ -1,11 +1,11 @@
 import express from "express";
-//import controllers
-import {
-  postAppointemnt,
-  updateAppointment,
-  getAppointment,
-  deleteAppointment,
-} from "../controllers/index.js";
+// Import controllers
+import 
+  postAppointemnt
+//   updateAppointment,
+//   getAppointment,
+//   deleteAppointment,
+ from "../controllers/index.js";
 import makeExpressCallback from "../utils/makeExpressCallback.js";
 
 // create router
@@ -15,11 +15,11 @@ const router = express.Router();
 router
   .route("/")
   .post(makeExpressCallback(postAppointemnt))
-  .get(makeExpressCallback(getAppointment));
-router
-  .route("/:id")
-  .patch(makeExpressCallback(updateAppointment))
-  .get(makeExpressCallback(getAppointment))
-  .delete(makeExpressCallback(deleteAppointment));
+//   .get(makeExpressCallback(getAppointment));
+// router
+//   .route("/:id")
+//   .patch(makeExpressCallback(updateAppointment))
+//   .get(makeExpressCallback(getAppointment))
+//   .delete(makeExpressCallback(deleteAppointment));
 
 export default router;

@@ -4,7 +4,7 @@ import Appointment from "./models/AppointmentModel.js";
 // Return a repository that has the following methods:
 // create appointment method being the code of the model the following
 
-export default function makeMongodbRepository() {
+export default function makeMongodbRepository({repo}) {
   return {
     create: async ({
       date,
@@ -32,74 +32,74 @@ export default function makeMongodbRepository() {
       } catch (error) {
         console.log("Error while creating appointment", error);
       }
-    },
-    cancel: async (appointmentId) => {
-      try {
-        const appointment = await Appointment.findByIdAndUpdate(
-          appointmentId,
-          {
-            status: "cancelled",
-          },
-          {
-            new: true,
-            runValidators: true,
-          }
-        );
-        return appointment;
-      } catch (error) {
-        console.log(
-          `Error while cancelling appointment with ID ${appointmentId}`,
-          error
-        );
-      }
-    },
-    edit: async (appointmentId, appointmentFields) => {
-      try {
-        const appointment = await Appointment.findByIdAndUpdate(
-          appointmentId,
-          appointmentFields,
-          {
-            new: true,
-            runValidators: true,
-          }
-        );
-        return appointment;
-      } catch (error) {
-        console.log(
-          `Error while editing appointment with ID ${appointmentId}`,
-          error
-        );
-      }
-    },
-    listById: async (appointmentId) => {
-      try {
-        const appointment = await Appointment.findById(appointmentId);
-        return appointment;
-      } catch (error) {
-        console.log(
-          `Error while listing appointment with ID ${appointmentId}`,
-          error
-        );
-      }
-    },
-    listByFilter: async () => {
-      try {
-        const appointments = await Appointment.find();
-        return appointments;
-      } catch (error) {
-        console.log(`Error while listing appointments with filter `, error);
-      }
-    },
-    deleteById: async (appointmentId) => {
-      try {
-        const appointment = await Appointment.findByIdAndDelete(appointmentId);
-        return appointment;
-      } catch (error) {
-        console.log(
-          `Error while deleting appointment with ID ${appointmentId}`,
-          error
-        );
-      }
+    // },
+    // cancel: async (appointmentId) => {
+    //   try {
+    //     const appointment = await Appointment.findByIdAndUpdate(
+    //       appointmentId,
+    //       {
+    //         status: "cancelled",
+    //       },
+    //       {
+    //         new: true,
+    //         runValidators: true,
+    //       }
+    //     );
+    //     return appointment;
+    //   } catch (error) {
+    //     console.log(
+    //       `Error while cancelling appointment with ID ${appointmentId}`,
+    //       error
+    //     );
+    //   }
+    // },
+    // edit: async (appointmentId, appointmentFields) => {
+    //   try {
+    //     const appointment = await Appointment.findByIdAndUpdate(
+    //       appointmentId,
+    //       appointmentFields,
+    //       {
+    //         new: true,
+    //         runValidators: true,
+    //       }
+    //     );
+    //     return appointment;
+    //   } catch (error) {
+    //     console.log(
+    //       `Error while editing appointment with ID ${appointmentId}`,
+    //       error
+    //     );
+    //   }
+    // },
+    // listById: async (appointmentId) => {
+    //   try {
+    //     const appointment = await Appointment.findById(appointmentId);
+    //     return appointment;
+    //   } catch (error) {
+    //     console.log(
+    //       `Error while listing appointment with ID ${appointmentId}`,
+    //       error
+    //     );
+    //   }
+    // },
+    // listByFilter: async () => {
+    //   try {
+    //     const appointments = await Appointment.find();
+    //     return appointments;
+    //   } catch (error) {
+    //     console.log(`Error while listing appointments with filter `, error);
+    //   }
+    // },
+    // deleteById: async (appointmentId) => {
+    //   try {
+    //     const appointment = await Appointment.findByIdAndDelete(appointmentId);
+    //     return appointment;
+    //   } catch (error) {
+    //     console.log(
+    //       `Error while deleting appointment with ID ${appointmentId}`,
+    //       error
+    //     );
+    //   }
     },
   };
 }
