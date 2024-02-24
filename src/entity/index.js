@@ -12,4 +12,4 @@ const makeAppointment = buildMakeAppointment({ makeSpecialist, makeUser, makeSpe
 const makeScheduleSlot = buildMakeScheduleSlot(makeAppointment);
 const makeSchedule = buildMakeSchedule({ makeSpecialist, makeScheduleSlot });
 
-export default { makeUser, makeSpeciality, makeSpecialist, makeAppointment, makeScheduleSlot, makeSchedule };
+export { makeUser, makeSpeciality, makeSpecialist, makeAppointment, makeScheduleSlot, makeSchedule };

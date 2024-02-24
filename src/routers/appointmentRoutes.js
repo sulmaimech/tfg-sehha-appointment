@@ -1,20 +1,20 @@
 import express from "express";
 // Import controllers
 import 
-  postAppointemnt
+   { postAppointment
 //   updateAppointment,
 //   getAppointment,
 //   deleteAppointment,
- from "../controllers/index.js";
+   } from "../controllers/index.js";
 import makeExpressCallback from "../utils/makeExpressCallback.js";
 
 // create router
 const router = express.Router();
-
+console.log(typeof(postAppointment))
 // routes
 router
   .route("/")
-  .post(makeExpressCallback(postAppointemnt))
+  .post(makeExpressCallback(postAppointment))
 //   .get(makeExpressCallback(getAppointment));
 // router
 //   .route("/:id")

@@ -3,4 +3,10 @@ import makeCreateNewAppointment from './create-new-appointment.js'
 
 const createNewAppointment = makeCreateNewAppointment(appointmentRepository)
 
-export default { createNewAppointment}
+const appointmentService = Object.freeze({
+    createNewAppointment, 
+}); 
+
+export default appointmentService;
+
+export {createNewAppointment};

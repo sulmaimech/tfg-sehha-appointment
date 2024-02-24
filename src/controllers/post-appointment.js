@@ -1,6 +1,7 @@
 export default function makePostAppointement ({ createNewAppointment }) {
-    return async function postComment (httpRequest) {
+    return async function postAppointemnt (httpRequest) {
       try {
+        console.log(httpRequest)
         const { source = {}, ...appointmentInfo } = httpRequest.body
         source.ip = httpRequest.ip
         source.browser = httpRequest.headers['User-Agent']
