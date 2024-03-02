@@ -2,7 +2,15 @@ export default function makePostAppointement ({ createNewAppointment }) {
     return async function postAppointemnt (httpRequest) {
       try {
         console.log(httpRequest)
-        const { source = {}, ...appointmentInfo } = httpRequest.body
+        const source = {}
+        const appointmentInfo = {
+          specialistId: httpRequest.body.specialistId,
+          userId: httpRequest.body.userId,
+          speciality: {
+            specialtyId: httpRequest.body.specialityId,
+            name: httpRequest.body.speciality.name,
+          }
+        }
         source.ip = httpRequest.ip
         source.browser = httpRequest.headers['User-Agent']
         if (httpRequest.headers['Referer']) {

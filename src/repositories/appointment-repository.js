@@ -5,7 +5,8 @@ export default function makeAppointmentRepository({ type, repo }) {
   if (type === "mongodb") {
     // create mongoose connection
     repo()
-    return makeMongodbRepository();
+    const repository = makeMongodbRepository();
+    return repository;
   } else if (type === "rest-api") {
     // Define Rest API repo
   }

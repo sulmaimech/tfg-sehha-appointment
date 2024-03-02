@@ -1,7 +1,8 @@
 import express from "express";
 // Import controllers
 import 
-   { postAppointment
+   { postAppointment, 
+    postSpeciality
 //   updateAppointment,
 //   getAppointment,
 //   deleteAppointment,
@@ -13,7 +14,11 @@ const router = express.Router();
 console.log(typeof(postAppointment))
 // routes
 router
-  .route("/")
+  .route("/specialties")
+  .post(makeExpressCallback(postSpeciality))
+  
+  
+  router.route("/appointments")
   .post(makeExpressCallback(postAppointment))
 //   .get(makeExpressCallback(getAppointment));
 // router
