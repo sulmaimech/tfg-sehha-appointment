@@ -9,7 +9,7 @@ const makeUser = buildMakeUser();
 const makeSpeciality = buildMakeSpeciality();
 const makeSpecialist = buildMakeSpecialist({ makeSpeciality });
 const makeAppointment = buildMakeAppointment({ makeSpecialist, makeUser, makeSpeciality });
-const makeScheduleSlot = buildMakeScheduleSlot(makeAppointment);
+const makeScheduleSlot = buildMakeScheduleSlot({makeAppointment});
 const makeSchedule = buildMakeSchedule({ makeSpecialist, makeScheduleSlot });
 
 export { makeUser, makeSpeciality, makeSpecialist, makeAppointment, makeScheduleSlot, makeSchedule };

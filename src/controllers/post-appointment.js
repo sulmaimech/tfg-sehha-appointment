@@ -25,9 +25,7 @@ export default function makePostAppointement ({ createNewAppointment }) {
             'Content-Type': 'application/json',
             'Last-Modified': new Date(posted.modifiedOn).toUTCString()
           },
-          statusCode: 201,
-          body: { created }
-        }
+          statusCode: 201}
       } catch (e) {
         // TODO: Error logging
         console.log(e)

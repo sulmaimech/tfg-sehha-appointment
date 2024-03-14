@@ -1,13 +1,16 @@
-export default function buildMakeSchedule({makeProfessional, makeScheduleSlot}){
-    return function makeSchedule({scheduleSlots, proffesional}){
-        if (!proffesional) throw new Error('Professional is required.');
-        const professional = makeProfessional({...proffesional})
-        if (scheduleSlots) {
-            const schedule = scheduleSlots.map(scheduleSlot => makeScheduleSlot({...scheduleSlot}))
+export default function buildMakeSchedule({makeSpecialist, makeScheduleSlot}){
+    return function makeSchedule({id, slots, specialist}){
+        if (!id) throw new Error('id is required.');
+        if (!specialist) throw new Error('Specialist is required.');
+        const spec = makeSpecialist({...specialist})
+        let schedule = []
+        if (slots) {
+            schedule = slots.map(slot => makeScheduleSlot({...slot}))
         }
         return Object.freeze({
-            getProfessional: () => professional,
-            getScheduleSlots: () => schedule
+            getId: () => id,
+            getSpecialist: () => spec,
+            getSlots: () => schedule
         })
     }
 
