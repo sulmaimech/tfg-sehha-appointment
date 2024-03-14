@@ -11,6 +11,7 @@ import makeRetrieveSpecialistDetails from './specialist/retrieve-specialist-deta
 import makeGetSpecialistSchedule from './schedule/get-specialist-schedule.js'
 import makeAddNewTimeSlots from './schedule/add-new-time-slots.js'
 import makeUpdateSlot from './schedule/update-slot.js'
+import makeRemoveTimeSlot from './schedule/remove-time-slot.js'
 
 const addNewSpeciality = makeAddNewSpeciality({appointmentRepository})
 const createNewAppointment = makeCreateNewAppointment({appointmentRepository})
@@ -24,6 +25,7 @@ const retrieveSpecialistDetails = makeRetrieveSpecialistDetails({appointmentRepo
 const getSpecialistSchedule = makeGetSpecialistSchedule({appointmentRepository})
 const addNewTimeSlots = makeAddNewTimeSlots({appointmentRepository})
 const updateSlot = makeUpdateSlot({appointmentRepository})
+const removeTimeSlot = makeRemoveTimeSlot({appointmentRepository})
 
 const appointmentService = Object.freeze({
     createNewAppointment, 
@@ -37,7 +39,8 @@ const appointmentService = Object.freeze({
     retrieveSpecialistDetails,
     getSpecialistSchedule, 
     addNewTimeSlots, 
-    updateSlot
+    updateSlot, 
+    removeTimeSlot
 }); 
 
 export default appointmentService;
@@ -54,5 +57,6 @@ export {
     retrieveSpecialistDetails,
     getSpecialistSchedule, 
     addNewTimeSlots, 
-    updateSlot
+    updateSlot, 
+    removeTimeSlot
     };

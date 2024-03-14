@@ -12,7 +12,8 @@ import
     getSpecialistById, 
     getSchedule, 
     postNewTimeSlots, 
-    putScheduleSlot
+    putScheduleSlot,
+    deleteTimeSlot
    } from "../controllers/index.js";
 import makeExpressCallback from "../utils/makeExpressCallback.js";
 
@@ -45,6 +46,7 @@ router.route("/specialists/:id/schedule")
       .get(makeExpressCallback(getSchedule))
       .post(makeExpressCallback(postNewTimeSlots))
       .put(makeExpressCallback(putScheduleSlot))
+      .delete(makeExpressCallback(deleteTimeSlot))
   
   router.route("/appointments")
   .post(makeExpressCallback(postAppointment))

@@ -285,8 +285,30 @@ export default function makeMongodbRepository() {
       }
     }
     ,
-    removeTimeSlot: async ({id, slotId}) => {
-     ///
+    removeTimeSlot: async ({ specialistId, slotId }) => {
+      console.log("id: ", specialistId)
+      console.log("slotId: ", slotId)
+      try {
+        // Find the schedule and pull the slotId from its slots array
+        const schedule = await Schedule.findOneAndUpdate(
+          { specialist: specialistId },
+          { $pull: { slots: slotId } },
+          { new: true }
+        ).exec();
+    
+        if (!schedule) {
+          throw new Error('Schedule not found');
+        }
+    
+        // Delete the specified slot
+        await ScheduleSlot.findByIdAndDelete(slotId);
+    
+        console.log(`Slot ${slotId} removed successfully from specialist ${specialistId}'s schedule.`);
+        return { message: `Slot ${slotId} removed successfully.` };
+      } catch (error) {
+        console.log("Error while removing time slot", error);
+        throw error;
+      }
     },
     updateSlot: async ({ specialistId, slotId, startTime, endTime }) => {
       try {
