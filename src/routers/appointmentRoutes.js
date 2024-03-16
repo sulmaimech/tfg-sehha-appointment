@@ -3,7 +3,7 @@ import express from "express";
 import 
    { postAppointment, 
     postSpeciality, 
-    getSpeciality, 
+    getSpecialities, 
     deleteSpeciality, 
     getSpecialityById, 
     updateASpeciality, 
@@ -13,7 +13,9 @@ import
     getSchedule, 
     postNewTimeSlots, 
     putScheduleSlot,
-    deleteTimeSlot
+    deleteTimeSlot, 
+    deleteAppointment,
+    getAppointments
    } from "../controllers/index.js";
 import makeExpressCallback from "../utils/makeExpressCallback.js";
 
@@ -24,7 +26,7 @@ console.log(typeof(postAppointment))
 router
   .route("/specialties")
   .post(makeExpressCallback(postSpeciality))
-  .get(makeExpressCallback(getSpeciality));
+  .get(makeExpressCallback(getSpecialities));
 
 router
   .route("/specialties/:id")
@@ -50,11 +52,11 @@ router.route("/specialists/:id/schedule")
   
   router.route("/appointments")
   .post(makeExpressCallback(postAppointment))
-//   .get(makeExpressCallback(getAppointment));
-// router
-//   .route("/:id")
-//   .patch(makeExpressCallback(updateAppointment))
-//   .get(makeExpressCallback(getAppointment))
-//   .delete(makeExpressCallback(deleteAppointment));
+  .get(makeExpressCallback(getAppointments))
+
+router.route("/appointments/:id")
+      .delete(makeExpressCallback(deleteAppointment))
+
+
 
 export default router;

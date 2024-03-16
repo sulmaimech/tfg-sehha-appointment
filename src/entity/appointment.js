@@ -1,34 +1,33 @@
 export default function buildMakeAppointment({
-  makePatient,
-  makeProfessional,
+  makeUser,
+  makeSpecialist,
   makeSpeciality
 }) {
   return function makeAppointment({
     id,
     speciality,
     status,
-    patient,
-    professional,
-    videoAppointment,
-  }) {
+    user,
+    specialist,
+    joinUrl  }) {
     if (!id) throw new Error("Appointment must have an id");
     if(!speciality) throw new Error ("Appointment must have a specialities");
     if (!status) throw new Error("Appointment must have a status");
-    if (!patient) throw new Error("Appointment must have a patient");
-    if (!professional) throw new Error("Appointment must have a professional");
-    if (!videoAppointment)
-      throw new Error("Appointment must have a video appointment");
+    if (!user) throw new Error("Appointment must have a user");
+    if (!specialist) throw new Error("Appointment must have a specialist");
+    if (!joinUrl)
+      joinUrl
 
-    patient = makePatient(patient);
-    professional = makeProfessional(professional);
+    user = makeUser(user);
+    specialist = makeSpecialist(specialist);
     speciality = makeSpeciality(speciality);
 
     return Object.freeze({
       getId: () => id,
       getStatus: () => status,
-      getPatient: () => patient,
-      getProfessional: () => professional,
-      getVideoAppointment: () => videoAppointment,
+      getUser: () => user,
+      getSpecialist: () => specialist,
+      getJoinUrl: () => joinUrl,
     });
   };
 }

@@ -6,26 +6,15 @@ export default function makePostAppointement ({ createNewAppointment }) {
         const appointmentInfo = {
           specialistId: httpRequest.body.specialistId,
           userId: httpRequest.body.userId,
-          speciality: {
-            specialtyId: httpRequest.body.specialityId,
-            name: httpRequest.body.speciality.name,
-          }
-        }
-        source.ip = httpRequest.ip
-        source.browser = httpRequest.headers['User-Agent']
-        if (httpRequest.headers['Referer']) {
-          source.referrer = httpRequest.headers['Referer']
+          slotId: httpRequest.body.slotId,
+          specialityid: httpRequest.body.specialityId
         }
         const created = await createNewAppointment({
-          ...appointmentInfo,
-          source
+          ...appointmentInfo
         })
         return {
-          headers: {
-            'Content-Type': 'application/json',
-            'Last-Modified': new Date(posted.modifiedOn).toUTCString()
-          },
-          statusCode: 201}
+          statusCode: 201
+        }
       } catch (e) {
         // TODO: Error logging
         console.log(e)

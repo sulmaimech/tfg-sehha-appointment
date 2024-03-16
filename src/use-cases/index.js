@@ -1,5 +1,4 @@
 import appointmentRepository from '../repositories/index.js'
-import makeCreateNewAppointment from './create-new-appointment.js'
 import makeAddNewSpeciality from "./specialities/add-new-medical-speciality.js"
 import makeListAllSpecialities from "./specialities/list-all-medical-specialities.js"
 import makeRemoveSpeciality from './specialities/remove-a-medical-speciality.js'
@@ -12,6 +11,9 @@ import makeGetSpecialistSchedule from './schedule/get-specialist-schedule.js'
 import makeAddNewTimeSlots from './schedule/add-new-time-slots.js'
 import makeUpdateSlot from './schedule/update-slot.js'
 import makeRemoveTimeSlot from './schedule/remove-time-slot.js'
+import makeCreateNewAppointment from './appointments/create-new-appointment.js'
+import makeCancelAppointment from './appointments/cancel-appointment.js'
+import makeListAllAppointments from './appointments/list-all-appointments.js'
 
 const addNewSpeciality = makeAddNewSpeciality({appointmentRepository})
 const createNewAppointment = makeCreateNewAppointment({appointmentRepository})
@@ -26,6 +28,8 @@ const getSpecialistSchedule = makeGetSpecialistSchedule({appointmentRepository})
 const addNewTimeSlots = makeAddNewTimeSlots({appointmentRepository})
 const updateSlot = makeUpdateSlot({appointmentRepository})
 const removeTimeSlot = makeRemoveTimeSlot({appointmentRepository})
+const cancelAppointment = makeCancelAppointment({appointmentRepository})
+const listAllAppointments = makeListAllAppointments({appointmentRepository})
 
 const appointmentService = Object.freeze({
     createNewAppointment, 
@@ -40,7 +44,9 @@ const appointmentService = Object.freeze({
     getSpecialistSchedule, 
     addNewTimeSlots, 
     updateSlot, 
-    removeTimeSlot
+    removeTimeSlot,
+    cancelAppointment,
+    listAllAppointments,
 }); 
 
 export default appointmentService;
@@ -58,5 +64,7 @@ export {
     getSpecialistSchedule, 
     addNewTimeSlots, 
     updateSlot, 
-    removeTimeSlot
+    removeTimeSlot, 
+    cancelAppointment,
+    listAllAppointments
     };

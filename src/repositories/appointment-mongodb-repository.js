@@ -14,13 +14,13 @@ import ScheduleSlot from "./models/ScheduleSlotModel.js";
 export default function makeMongodbRepository() {
   return {
     // specialiy operations
-    addSpeciality: async ({specialityInfo}) => {
+    addSpeciality: async ({ specialityInfo }) => {
       try {
-        console.log("SpecialityInfo @addSpeciality: ", specialityInfo) 
+        console.log("SpecialityInfo @addSpeciality: ", specialityInfo)
         const speciality = {
           name: specialityInfo.name,
           description: specialityInfo.description,
-        } 
+        }
         const { _doc } = await Speciality.create(speciality);
         console.log("Speciality @addSpeciality: ", _doc)
         const specialityResponse = { id: _doc._id, ..._doc };
@@ -34,8 +34,8 @@ export default function makeMongodbRepository() {
 
       try {
         const specialities = await Speciality.find();
-        return specialities.map( s => {
-          const speciality =  { id: s._doc._id, ...s._doc }
+        return specialities.map(s => {
+          const speciality = { id: s._doc._id, ...s._doc }
           console.log("Speciality: ", speciality)
           return speciality
         });
@@ -44,7 +44,7 @@ export default function makeMongodbRepository() {
       }
 
     },
-    removeSpeciality: async ({id}) => {
+    removeSpeciality: async ({ id }) => {
       try {
         const { _doc } = await Speciality.findByIdAndDelete(id);
         console.log("Removed Speciality: ", speciality)
@@ -52,17 +52,17 @@ export default function makeMongodbRepository() {
       } catch (error) {
         console.log("Error while creating appointment", error);
       }
-    } 
+    }
     ,
-    getSpecialityDetails: async ({id} ) => {
+    getSpecialityDetails: async ({ id }) => {
       try {
         const { _doc } = await Speciality.findById(id);
-        return  { id: _doc._id, ..._doc };
+        return { id: _doc._id, ..._doc };
       } catch (error) {
         console.log("Error while retrieving a Speciality", error);
       }
-    }, 
-    updateSpeciality: async ({id, specialityInfo}) => {
+    },
+    updateSpeciality: async ({ id, specialityInfo }) => {
       try {
         console.log("SpecialityInfo @updateSpeciality: ", specialityInfo)
         // Ensure 'specialityInfo' is correctly structured as per your schema requirements
@@ -75,18 +75,27 @@ export default function makeMongodbRepository() {
       }
     },
     // User operations
-    retrieveUserById: async ({id}) => {
+    retrieveUserById: async ({ id }) => {
       try {
         console.log("id @retrieveIdByUser @appointmentReposiotory: ", id)
         const { _doc } = await User.findById(id);
         console.log("User: ", _doc)
-        return  { id: _doc._id, ..._doc };
+        return {
+          id: _doc._id,
+          firstName: _doc.firstName,
+          lastName: _doc.lastName,
+          dateOfBirth: _doc.dateOfBirth,
+          email: _doc.email,
+          phone: _doc.phone,
+          gender: _doc.gender,
+          appointments: _doc.appointments
+        }
       } catch (error) {
         console.log("Error while retrieving a User", error);
       }
     }
     ,
-    updateUser: async ({id, userInfo}) => {
+    updateUser: async ({ id, userInfo }) => {
       try {
         console.log("UserInfo @updateUser: ", userInfo)
         // Ensure 'userInfo' is correctly structured as per your schema requirements
@@ -103,18 +112,18 @@ export default function makeMongodbRepository() {
     retrieveAllSpecialists: async () => {
       try {
         const specialists = await Specialist.find({})
-        .populate('specialities') // This will replace the specialities ObjectId with the actual Speciality documents
-        .exec(); // exec() returns a Promise, making it awaitable
-      ;
-        return specialists.map( s => {
-          const specialist =  { 
+          .populate('specialities') // This will replace the specialities ObjectId with the actual Speciality documents
+          .exec(); // exec() returns a Promise, making it awaitable
+        ;
+        return specialists.map(s => {
+          const specialist = {
             id: s._doc._id,
             firstName: s._doc.firstName,
             lastName: s._doc.lastName,
             specialities: s._doc.specialities,
             email: s._doc.contactInfo.email,
             phone: s._doc.contactInfo.phone
-            }
+          }
           console.log("Specialist: ", specialist)
           return specialist
         });
@@ -122,48 +131,48 @@ export default function makeMongodbRepository() {
         console.log("Error while retrieving all Specialists", error);
       }
     },
-    retrieveSpecialistById: async ({id}) => {
+    retrieveSpecialistById: async ({ id }) => {
       try {
         const { _doc } = await Specialist.findById(id)
-        .populate('specialities') // This will replace the specialities ObjectId with the actual Speciality documents
-        .exec(); // exec() returns a Promise, making it awaitable
+          .populate('specialities') // This will replace the specialities ObjectId with the actual Speciality documents
+          .exec(); // exec() returns a Promise, making it awaitable
 
         console.log("Specialist: ", _doc)
-        
-        return   { 
+
+        return {
           id: _doc._id,
           firstName: _doc.firstName,
           lastName: _doc.lastName,
           specialities: _doc.specialities,
           email: _doc.contactInfo.email,
           phone: _doc.contactInfo.phone
-          };
+        };
       } catch (error) {
         console.log("Error while retrieving a Specialist", error);
       }
     },
 
     // Schedule Operations
-    getSpecialistSchedule: async ({id}) => {
+    getSpecialistSchedule: async ({ id }) => {
       try {
-        const schedule = await Schedule.findOne({specialist: id})
-        .populate({
-          path: 'specialist',
-          populate: {
-            path: 'specialities',
-          },
-        })
-        .populate({
-          path: 'slots',
-          model: 'ScheduleSlot',
-          strictPopulate: false,
-          populate: {
-            path: 'appointment',
+        const schedule = await Schedule.findOne({ specialist: id })
+          .populate({
+            path: 'specialist',
+            populate: {
+              path: 'specialities',
+            },
+          })
+          .populate({
+            path: 'slots',
+            model: 'ScheduleSlot',
             strictPopulate: false,
-            populate: ['user', 'specialist', 'speciality'], // Populate further details of the appointment if needed
-          },
-        })
-        .exec();
+            populate: {
+              path: 'appointment',
+              strictPopulate: false,
+              populate: ['user', 'specialist', 'speciality'], // Populate further details of the appointment if needed
+            },
+          })
+          .exec();
 
         console.log("Schedule @getSpecialistSchedule: ", schedule)
         return {
@@ -173,7 +182,7 @@ export default function makeMongodbRepository() {
             firstName: schedule.specialist.firstName,
             lastName: schedule.specialist.lastName,
             email: schedule.specialist.contactInfo.email,
-            phone: schedule.specialist.contactInfo.phone, 
+            phone: schedule.specialist.contactInfo.phone,
             specialities: schedule.specialist.specialities,
           },
           slots: schedule.slots.map(slot => {
@@ -195,27 +204,27 @@ export default function makeMongodbRepository() {
     addNewTimeSlots: async ({ specialistId, slots }) => {
       try {
         console.log("id: ", specialistId)
-        const schedule = await Schedule.findOne({specialist: specialistId})
-        .populate({
-          path: 'specialist',
-          populate: {
-            path: 'specialities',
-          },
-        })
-        .populate({
-          path: 'slots',
-          model: 'ScheduleSlot',
-          strictPopulate: false,
-          populate: {
-            path: 'appointment',
+        const schedule = await Schedule.findOne({ specialist: specialistId })
+          .populate({
+            path: 'specialist',
+            populate: {
+              path: 'specialities',
+            },
+          })
+          .populate({
+            path: 'slots',
+            model: 'ScheduleSlot',
             strictPopulate: false,
-            populate: ['user', 'specialist', 'speciality'], // Populate further details of the appointment if needed
-          },
-        })
-        .exec();
+            populate: {
+              path: 'appointment',
+              strictPopulate: false,
+              populate: ['user', 'specialist', 'speciality'], // Populate further details of the appointment if needed
+            },
+          })
+          .exec();
 
         console.log("Schedule @addNewTimeSlots: ", schedule);
-    
+
         // Check for overlapping slots
         const overlaps = await Promise.all(slots.map(async (slot) => {
           const overlappingSlot = await ScheduleSlot.findOne({
@@ -226,12 +235,12 @@ export default function makeMongodbRepository() {
           });
           return overlappingSlot ? true : false;
         }));
-    
+
         // If any slot overlaps, throw an error or handle it as needed
         if (overlaps.some(isOverlap => isOverlap)) {
           throw new Error("One or more slots overlap with existing slots.");
         }
-    
+
         // If no overlaps, proceed to create and save new slots
         const newSlotDocs = await Promise.all(slots.map(async (slot) => {
           const newSlot = new ScheduleSlot({
@@ -246,7 +255,7 @@ export default function makeMongodbRepository() {
         // Add the new slot IDs to the schedule's slots array
         const newSlotIds = newSlotDocs.map(slotDoc => slotDoc._id);
         schedule.slots.push(...newSlotIds);
-        
+
         // Save the updated schedule document
         await schedule.save();
 
@@ -258,7 +267,7 @@ export default function makeMongodbRepository() {
         });
 
         console.log("Schedule @ end: ", schedule)
-    
+
         return {
           id: schedule._id,
           specialist: {
@@ -266,7 +275,7 @@ export default function makeMongodbRepository() {
             firstName: schedule.specialist.firstName,
             lastName: schedule.specialist.lastName,
             email: schedule.specialist.contactInfo.email,
-            phone: schedule.specialist.contactInfo.phone, 
+            phone: schedule.specialist.contactInfo.phone,
             specialities: schedule.specialist.specialities,
           },
           slots: schedule.slots.map(slot => {
@@ -295,14 +304,14 @@ export default function makeMongodbRepository() {
           { $pull: { slots: slotId } },
           { new: true }
         ).exec();
-    
+
         if (!schedule) {
           throw new Error('Schedule not found');
         }
-    
+
         // Delete the specified slot
         await ScheduleSlot.findByIdAndDelete(slotId);
-    
+
         console.log(`Slot ${slotId} removed successfully from specialist ${specialistId}'s schedule.`);
         return { message: `Slot ${slotId} removed successfully.` };
       } catch (error) {
@@ -316,20 +325,20 @@ export default function makeMongodbRepository() {
         console.log("slotId: ", slotId)
         console.log("startTime: ", startTime)
         console.log("endTime: ", endTime)
-    
-    // Find and update the slot
-    const updatedSlot = await ScheduleSlot.findByIdAndUpdate(
-      slotId,
-      { startTime, endTime },
-      { new: true, runValidators: true }
-    ).exec();
 
-    if (!updatedSlot) {
-      throw new Error('Slot not found');
-    }
+        // Find and update the slot
+        const updatedSlot = await ScheduleSlot.findByIdAndUpdate(
+          slotId,
+          { startTime, endTime },
+          { new: true, runValidators: true }
+        ).exec();
 
-    console.log(`Slot ${slotId} updated successfully.`);
-    console.log("This is the slot: ", updatedSlot)
+        if (!updatedSlot) {
+          throw new Error('Slot not found');
+        }
+
+        console.log(`Slot ${slotId} updated successfully.`);
+        console.log("This is the slot: ", updatedSlot)
 
         return null
       } catch (error) {
@@ -337,27 +346,90 @@ export default function makeMongodbRepository() {
         throw error; // It's good practice to re-throw the error or handle it appropriately
       }
     },
-    
+
     // Appointment operations
-    createAppointment: async ({appointmentInfo}) => {
+    createAppointment: async ({userId, specialistId, specialityId, slotId }) => {
       try {
-        const { _doc } = await Appointment.create(appointmentInfo);
-        return { id: _doc._id, ..._doc };
+       const appointment=  await Appointment.create({ 
+          user: userId, 
+          specialist:specialistId, 
+          status: "scheduled", 
+          speciality: specialityId, 
+          slot: slotId });
+        return {id: appointment._id, user};
       } catch (error) {
         console.log("Error while creating appointment", error);
       }
     },
-    listAllAppointments: async () => {
+    cancelAppointment: async ({id}) => {
       try {
-        const appointments = await Appointment.find();
-        return appointments.map( a => {
-          const appointment =  { id: a._doc._id, ...a._doc }
-          console.log("Appointment: ", appointment)
-          return appointment
-        });
+        const appointment = await Appointment.findByIdAndUpdate(id, { status: "canceled" }, { new: true });
+        return appointment;
       } catch (error) {
-        console.log("Error while creating appointment", error);
+        console.log("Error while canceling appointment", error);
+      }
+    } ,
+    updateAppointment: async ({id, status}) => {
+      try {
+        const appointment = await Appointment.findByIdAndUpdate(id, { status }, { new: true });
+        return appointment;
+      } catch (error) {
+        console.log("Error while updating appointment", error);
+      }
+    }  ,
+    retrieveAppointmentById: async ({ id }) => {
+      try {
+        const appointment = await Appointment.findById(id);
+        return appointment;
+        } catch (error) {
+        console.log("Error while retrieving a User", error);
       }
     }
-  }
+    ,
+    listAllAppointments: async () => {
+      try {
+        const appointments = await Appointment.find().populate('user specialist speciality slot').exec();
+        console.log("Appointments: ", appointments);
+        return appointments.map(appointment => {
+          return {
+            id: appointment._id.toString(),
+            status: appointment.status,
+            user: {
+              id: appointment.user._id.toString(),
+              firstName: appointment.user.firstName,
+              lastName: appointment.user.lastName,
+              dateOfBirth: appointment.user.dateOfBirth.toISOString().split('T')[0],
+              gender: appointment.user.gender,
+              email: appointment.user.email,
+              phone: appointment.user.phone,
+            },
+            specialist: {
+              id: appointment.specialist._id.toString(),
+              firstName: appointment.specialist.firstName,
+              lastName: appointment.specialist.lastName,
+              email: appointment.specialist.contactInfo.email, // Assuming contactInfo is populated correctly
+              phone: appointment.specialist.contactInfo.phone,
+              specialities: appointment.specialist.specialities.map(speciality => {
+                // Placeholder for speciality transformation; adjust as needed
+                return {
+                  id: speciality._id.toString(),
+                  name: "Placeholder Name", // You need to adjust this
+                  description: "Placeholder Description" // And this
+                };
+              }),
+            },
+            speciality: {
+              // Assuming you want to transform a primary speciality; adjust as needed
+              id: "Placeholder Speciality ID", // You need to adjust this
+              name: "Placeholder Speciality Name", // And this
+              description: "Placeholder Speciality Description" // And this
+            },
+            joinUrl: appointment.joinUrl,
+          };
+        });
+      } catch (error) {
+        console.log("Error while retrieving appointments", error);
+      }
+    }
+  }    
 }
