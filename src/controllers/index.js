@@ -16,14 +16,14 @@ import {createNewAppointment,
 } from "../use-cases/index.js";
 
 import makePostAppointment from "./post-appointment.js";
-import makePostSpeciality from "./post-speciality.js";
-import makeGetSpecialities from "./get-specialities.js";
-import makeDeleteSpeciality from "./delete-speciality.js";
-import makeGetSpecialityById from "./get-speciality-by-id.js";
-import makeUpdateASpeciality from "./update-speciality.js";
-import makeGetUser from "./get-user.js";
-import makeGetSpecialists from "./getSpecialists.js";
-import makeGetSpecialistById from "./getSpecialistById.js";
+import makePostSpeciality from "./speciality/post-speciality.js";
+import makeGetSpecialities from "./speciality/get-specialities.js";
+import makeDeleteSpeciality from "./speciality/delete-speciality.js";
+import makeGetSpecialityById from "./speciality/get-speciality-by-id.js";
+import makeUpdateASpeciality from "./speciality/update-speciality.js";
+import makeGetUser from "./user/get-user.js";
+import makeGetSpecialists from "./specialist/getSpecialists.js";
+import makeGetSpecialistById from "./specialist/getSpecialistById.js";
 import makeGetSpecialistSchedule from "./getSpecialistSchedule.js";
 import makePostNewTimeSlots from "./post-new-time-slots.js";
 import makePutScheduleSlot from "./put-schedule-slot.js";

@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -27,10 +27,11 @@
   },
   "homepage": "https://github.com/souel22/sehha-appointment#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "mongoose": "^7.3.4"
-  }, 
+  },
   "devDependencies": {
     "nodemon": "^3.0.3"
   }
