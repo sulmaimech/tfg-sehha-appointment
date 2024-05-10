@@ -5,6 +5,7 @@ import makeRemoveSpeciality from './specialities/remove-a-medical-speciality.js'
 import makeGetSpecialityDetails from './specialities/get-speciality-details.js'
 import makeUpdateSpeciality from './specialities/update-medical-speciality.js'
 import makeRetrieveUserDetails from './users/retrieve-user-details.js'
+import makeRetrieveAllUsers from './users/retrieveAllUsers.js'
 import makeRetrieveAllSpecialists from './specialist/retrieve-medical-specialists.js'
 import makeRetrieveSpecialistDetails from './specialist/retrieve-specialist-details.js'
 import makeGetSpecialistSchedule from './schedule/get-specialist-schedule.js'
@@ -22,6 +23,7 @@ const removeSpeciality = makeRemoveSpeciality({appointmentRepository})
 const getSpecialityDetails = makeGetSpecialityDetails({appointmentRepository})
 const updateSpeciality = makeUpdateSpeciality({appointmentRepository})
 const retrieveUserDetails = makeRetrieveUserDetails({appointmentRepository})
+const retrieveAllUsers = makeRetrieveAllUsers({appointmentRepository})
 const retrieveAllSpecialists = makeRetrieveAllSpecialists({appointmentRepository})
 const retrieveSpecialistDetails = makeRetrieveSpecialistDetails({appointmentRepository})
 const getSpecialistSchedule = makeGetSpecialistSchedule({appointmentRepository})
@@ -39,6 +41,7 @@ const appointmentService = Object.freeze({
     getSpecialityDetails,
     updateSpeciality,
     retrieveUserDetails,
+    retrieveAllUsers,
     retrieveAllSpecialists,
     retrieveSpecialistDetails,
     getSpecialistSchedule, 
@@ -59,6 +62,7 @@ export {
     getSpecialityDetails, 
     updateSpeciality, 
     retrieveUserDetails, 
+    retrieveAllUsers,
     retrieveAllSpecialists, 
     retrieveSpecialistDetails,
     getSpecialistSchedule, 

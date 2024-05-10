@@ -9,6 +9,7 @@ export default function buildMakeAppointment({
     user,
     specialist,
     speciality,
+    description,
     joinUrl  
   }) {
     console.log("@makeAppointment id", id);
@@ -17,7 +18,6 @@ export default function buildMakeAppointment({
     console.log("@makeAppointment user", user);
     console.log("@makeAppointment specialist", specialist);
     // specialist specialities
-    console.log("@makeAppointment specialist specialities", specialist.specialities);
     console.log("@makeAppointment joinUrl", joinUrl);
 
     if (!id) throw new Error("Appointment must have an id");
@@ -39,6 +39,7 @@ export default function buildMakeAppointment({
       getSpecialist: () => specialist,
       getSpeciality: () => speciality,
       getJoinUrl: () => joinUrl,
+      getDescription: () => description,
     });
   };
 }

@@ -5,6 +5,7 @@ import {createNewAppointment,
     getSpecialityDetails, 
     updateSpeciality, 
     retrieveUserDetails, 
+    retrieveAllUsers,
     retrieveAllSpecialists, 
     retrieveSpecialistDetails, 
     getSpecialistSchedule, 
@@ -15,21 +16,22 @@ import {createNewAppointment,
     listAllAppointments
 } from "../use-cases/index.js";
 
-import makePostAppointment from "./post-appointment.js";
 import makePostSpeciality from "./speciality/post-speciality.js";
 import makeGetSpecialities from "./speciality/get-specialities.js";
 import makeDeleteSpeciality from "./speciality/delete-speciality.js";
 import makeGetSpecialityById from "./speciality/get-speciality-by-id.js";
 import makeUpdateASpeciality from "./speciality/update-speciality.js";
 import makeGetUser from "./user/get-user.js";
+import makeGetUsers from "./user/get-users.js";
 import makeGetSpecialists from "./specialist/getSpecialists.js";
 import makeGetSpecialistById from "./specialist/getSpecialistById.js";
-import makeGetSpecialistSchedule from "./getSpecialistSchedule.js";
-import makePostNewTimeSlots from "./post-new-time-slots.js";
-import makePutScheduleSlot from "./put-schedule-slot.js";
-import makeDeleteTimeSlot from "./delete-time-slot.js";
-import makeDeleteAppointment from "./delete-appointment.js";
-import makeGetAppointments from "./get-appointments.js";
+import makeGetSpecialistSchedule from "./schedule/getSpecialistSchedule.js";
+import makePostNewTimeSlots from "./schedule/post-new-time-slots.js";
+import makePutScheduleSlot from "./schedule/put-schedule-slot.js";
+import makeDeleteTimeSlot from "./schedule/delete-time-slot.js";
+import makePostAppointment from "./appointment/post-appointment.js";
+import makeDeleteAppointment from "./appointment/delete-appointment.js";
+import makeGetAppointments from "./appointment/get-appointments.js";
 
 const postAppointment = makePostAppointment({ createNewAppointment });
 const postSpeciality = makePostSpeciality({ addNewSpeciality });
@@ -38,6 +40,7 @@ const deleteSpeciality = makeDeleteSpeciality({ removeSpeciality });
 const getSpecialityById = makeGetSpecialityById({ getSpecialityDetails})
 const updateASpeciality = makeUpdateASpeciality({ updateSpeciality })
 const getUser = makeGetUser({retrieveUserDetails})
+const getUsers = makeGetUsers({retrieveAllUsers})
 const getSpecialists = makeGetSpecialists({retrieveAllSpecialists})
 const getSpecialistById = makeGetSpecialistById({retrieveSpecialistDetails})
 const getSchedule = makeGetSpecialistSchedule({getSpecialistSchedule})
@@ -55,6 +58,7 @@ const appointmentController = Object.freeze({
     getSpecialityById, 
     updateASpeciality,
     getUser, 
+    getUsers,
     getSpecialists, 
     getSpecialistById,
     getSchedule, 
@@ -73,6 +77,7 @@ export { postAppointment,
     getSpecialityById, 
     updateASpeciality, 
     getUser, 
+    getUsers,
     getSpecialists, 
     getSpecialistById,
     getSchedule, 

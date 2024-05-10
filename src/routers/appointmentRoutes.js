@@ -8,6 +8,7 @@ import
     getSpecialityById, 
     updateASpeciality, 
     getUser, 
+    getUsers, 
     getSpecialists,
     getSpecialistById, 
     getSchedule, 
@@ -37,6 +38,9 @@ router
 router.route("/users/:id")
       .get(makeExpressCallback(getUser))
   
+
+router.route("/users")
+      .get(makeExpressCallback(getUsers))
 
 router.route("/specialists")
       .get(makeExpressCallback(getSpecialists))
