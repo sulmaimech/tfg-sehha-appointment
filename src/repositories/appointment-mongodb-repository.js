@@ -5,6 +5,7 @@ import Specialist from "./models/SpecialistModel.js";
 import Schedule from "./models/ScheduleModel.js";
 import ScheduleSlot from "./models/ScheduleSlotModel.js";
 import APIFeatures from "../utils/apiFeature.js";
+import { createUser } from "../use-cases/index.js";
 
 export default function makeMongodbRepository() {
   return {
@@ -142,18 +143,27 @@ export default function makeMongodbRepository() {
       }
     }
     ,
-    updateUser: async ({ id, userInfo }) => {
+    createUser: async ({ id, firstName, lastName, dateOfBirth, gender, email, phone }) => {
       try {
-        console.log("UserInfo @updateUser: ", userInfo)
-        // Ensure 'userInfo' is correctly structured as per your schema requirements
-        const updatedUser = await User.findByIdAndUpdate(id, userInfo, { new: true }); // 'new: true' to return the updated document
-        console.log("Updated User: ", updatedUser);
-        return updatedUser; // Return the updated document
+        const user = {
+          _id: id,
+          firstName,
+          lastName,
+          dateOfBirth,
+          gender,
+          email,
+          phone
+        };
+        console.log("Create ucser: ", user)
+        const newUser = await User.create(user);
+        console.log("New User: ", newUser);
+        return newUser;
       } catch (error) {
-        console.error("Error while updating a User", error);
-        return null; // Return null or an appropriate error indication
+        throw new Error("Error while creating a User: " + error.message);
       }
-    },
+    }
+    ,
+
 
     // Specialists operations
     retrieveAllSpecialists: async ({ query }) => {
@@ -188,8 +198,7 @@ export default function makeMongodbRepository() {
         const specialists = await features.query;
 
         // Check if the result is indeed an array as expected
-
-        console.log(specialists)
+        console.log("Specialists: ", specialists)
 
         return specialists.map(s => {
           const specialist = {
@@ -253,115 +262,138 @@ export default function makeMongodbRepository() {
         throw new Error(`Error while retrieving a Specialist by ID (${id}): ${error.message}`);
       }
     },
-    // Schedule Operations
-    getSpecialistSchedule: async ({ id, query }) => {
-      try {
-        const features = new APIFeatures(Schedule.findOne({ specialist: id })
-          .populate({
-            path: 'specialist',
-            select: '-schedule',
-            populate: {
-              path: 'specialities',
-            },
-          })
-          .populate({
-            path: 'slots',
-            populate: {
-              path: 'appointment',
-              select: '-slot',
-              populate: [
-                {
-                  path: 'user',
-                  select: '-appointments'
-                },
-                {
-                  path: 'speciality'
-                },
-                {
-                  path: 'specialist',
-                  select: '-schedule',
-                  populate: {
-                    path: 'specialities',
-                  }
-                },
-              ]
-            }
-          }), query)
-          .filter()
-          .sort()
-          .limitFields()
-          .paginate();
 
-        let schedule = await features.execWithPopulatedSort();
-        schedule = schedule[0]
+getSpecialistSchedule: async ({ id, query }) => {
+  try {
+    // Fetch the schedule and populate the specialist field
+    let schedule = await Schedule.findOne({ specialist: id })
+      .populate({
+        path: 'specialist',
+        select: '-schedule',
+        populate: {
+          path: 'specialities',
+        },
+      })
+      .exec();
 
-        // Check if the schedule exists before proceeding
-        if (!schedule) {
-          console.log("No schedule found for the provided ID.");
-          return null; // or appropriate response indicating no schedule found
-        }
+    // Log the initial schedule with populated specialist
+    console.log("Initial schedule with populated specialist:", schedule);
 
+    if (!schedule) {
+      console.log("No schedule found for the provided ID.");
+      return null; // or appropriate response indicating no schedule found
+    }
 
-        // Process and return the structured schedule data
-        return {
-          id: schedule._id,
-          specialist: schedule.specialist ? {
-            id: schedule.specialist._id,
-            firstName: schedule.specialist.firstName,
-            lastName: schedule.specialist.lastName,
-            specialities: schedule.specialist.specialities ? schedule.specialist.specialities.map(speciality => ({
-              id: speciality._id,
-              name: speciality.name,
-              description: speciality.description
-            })) : [],
-            email: schedule.specialist.contactInfo.email,
-            phone: schedule.specialist.contactInfo.phone
-          } : null,
-          slots: schedule.slots ? schedule.slots.map(slot => ({
-            slotId: slot._id,
-            startTime: slot.startTime,
-            endTime: slot.endTime,
-            appointment: slot.appointment ? {
-              id: slot.appointment._id,
-              user: slot.appointment.user ? {
-                id: slot.appointment.user._id,
-                firstName: slot.appointment.user.firstName,
-                lastName: slot.appointment.user.lastName,
-                email: slot.appointment.user.email,
-                phone: slot.appointment.user.phone,
-                gender: slot.appointment.user.gender,
-                dateOfBirth: slot.appointment.user.dateOfBirth
-              } : null,
-              speciality: {
-                id: slot.appointment.speciality._id,
-                name: slot.appointment.speciality.name,
-                description: slot.appointment.speciality.description
+    // Use API Features for further processing if needed
+    const features = new APIFeatures(
+      Schedule.findOne({ specialist: id })
+        .populate({
+          path: 'specialist',
+          select: '-schedule',
+          populate: {
+            path: 'specialities',
+          },
+        })
+        .populate({
+          path: 'slots',
+          populate: {
+            path: 'appointment',
+            select: '-slot',
+            populate: [
+              {
+                path: 'user',
+                select: '-appointments'
               },
-              specialist: {
-                id: slot.appointment.specialist._id,
-                firstName: slot.appointment.specialist.firstName,
-                lastName: slot.appointment.specialist.lastName,
-                email: slot.appointment.specialist.contactInfo.email,
-                phone: slot.appointment.specialist.contactInfo.phone,
-                specialities: slot.appointment.specialist.specialities.map(speciality => {
-                  return {
-                    id: speciality._id.toString(),
-                    name: speciality.name, // You need to adjust this
-                    description: speciality.description // And this
-                  };
-                })
-              }
-              ,
-              status: slot.appointment.status,
-              joinUrl: slot.appointment.joinUrl
-            } : null
-          })) : []
-        };
-      } catch (error) {
-        console.error("Error while retrieving a Specialist Schedule", error);
-        throw error; // Rethrow or handle as needed
-      }
-    },
+              {
+                path: 'speciality'
+              },
+              {
+                path: 'specialist',
+                select: '-schedule',
+                populate: {
+                  path: 'specialities',
+                }
+              },
+            ]
+          }
+        }),
+      query
+    )
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+    schedule = await features.execWithPopulatedSort();
+    schedule = schedule[0];
+
+    if (!schedule) {
+      console.log("No populated schedule found.");
+      return null;
+    }
+
+    console.log("Populated Schedule: ", schedule);
+
+    // Process and return the structured schedule data
+    return {
+      id: schedule._id,
+      specialist: schedule.specialist ? {
+        id: schedule.specialist._id,
+        firstName: schedule.specialist.firstName,
+        lastName: schedule.specialist.lastName,
+        specialities: schedule.specialist.specialities ? schedule.specialist.specialities.map(speciality => ({
+          id: speciality._id,
+          name: speciality.name,
+          description: speciality.description
+        })) : [],
+        email: schedule.specialist.contactInfo.email,
+        phone: schedule.specialist.contactInfo.phone
+      } : null,
+      slots: schedule.slots ? schedule.slots.map(slot => ({
+        slotId: slot._id,
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        appointment: slot.appointment ? {
+          id: slot.appointment._id,
+          user: slot.appointment.user ? {
+            id: slot.appointment.user._id,
+            firstName: slot.appointment.user.firstName,
+            lastName: slot.appointment.user.lastName,
+            email: slot.appointment.user.email,
+            phone: slot.appointment.user.phone,
+            gender: slot.appointment.user.gender,
+            dateOfBirth: slot.appointment.user.dateOfBirth
+          } : null,
+          speciality: {
+            id: slot.appointment.speciality._id,
+            name: slot.appointment.speciality.name,
+            description: slot.appointment.speciality.description
+          },
+          specialist: {
+            id: slot.appointment.specialist._id,
+            firstName: slot.appointment.specialist.firstName,
+            lastName: slot.appointment.specialist.lastName,
+            email: slot.appointment.specialist.contactInfo.email,
+            phone: slot.appointment.specialist.contactInfo.phone,
+            specialities: slot.appointment.specialist.specialities.map(speciality => {
+              return {
+                id: speciality._id.toString(),
+                name: speciality.name,
+                description: speciality.description
+              };
+            })
+          },
+          status: slot.appointment.status,
+          joinUrl: slot.appointment.joinUrl
+        } : null
+      })) : []
+    };
+  } catch (error) {
+    console.error("Error while retrieving a Specialist Schedule", error);
+    throw error; // Rethrow or handle as needed
+  }
+},
+    
 
     addNewTimeSlots: async ({ specialistId, slots }) => {
       try {
@@ -678,6 +710,9 @@ export default function makeMongodbRepository() {
           .sort()
 
         let appointments = await features.execWithPopulatedSort();
+        console.log("-------------------------------------------------")
+        console.log("-------------------------------------------------")
+
         console.log("Appointments: ", appointments);
 
         if (query.from) {
@@ -725,7 +760,7 @@ export default function makeMongodbRepository() {
 
         }
         console.log("Appointments: ", appointments);
-        return appointments.map(appointment => {
+        return appointments? appointments.map(appointment => {
           return {
             id: appointment.slot._id.toString(),
             startTime: appointment.slot.startTime,
@@ -764,7 +799,7 @@ export default function makeMongodbRepository() {
               joinUrl: appointment.joinUrl,
             }
           };
-        });
+        }): [];
       } catch (error) {
         throw new Error("Failed to retrieve appointments due to an internal error: ", error); // Example for API response
       }

@@ -1,14 +1,28 @@
-import app from "./src/app.js";
-import dotenv from "dotenv";
-import coes from "cors";
-// load environment variables
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import app from './src/app.js';
+
+// Load environment variables
 dotenv.config({ path: `./.env` });
 
-// CORS
-app.use(coes());
+// Create an Express application
+const server = express();
 
-// launch app on port 3000
+// Enable CORS for all routes
+server.use(cors({
+  origin: 'http://localhost:3001', // Allow requests from this origin
+  credentials: true, // Allow cookies to be sent with requests
+}));
+
+// Use the main app routes
+server.use(app);
+
+// Handle preflight requests
+server.options('*', cors());
+
+// Launch app on port 3000
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Running on port ${PORT}`);
 });

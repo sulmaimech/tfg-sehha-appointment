@@ -1,4 +1,5 @@
 import express from "express";
+// import requireAuth from "../utils/middleware/requireAuth.js";
 // Import controllers
 import 
    { postAppointment, 
@@ -22,6 +23,10 @@ import makeExpressCallback from "../utils/makeExpressCallback.js";
 
 // create router
 const router = express.Router();
+
+// user middleware 
+// router.use(requireAuth);
+
 console.log(typeof(postAppointment))
 // routes
 router
