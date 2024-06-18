@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feature/appointment-management 
   workflow_dispatch:
 
 jobs:
