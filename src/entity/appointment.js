@@ -12,14 +12,6 @@ export default function buildMakeAppointment({
     description,
     joinUrl  
   }) {
-    console.log("@makeAppointment id", id);
-    console.log("@makeAppointment speciality", speciality);
-    console.log("@makeAppointment status", status);
-    console.log("@makeAppointment user", user);
-    console.log("@makeAppointment specialist", specialist);
-    // specialist specialities
-    console.log("@makeAppointment joinUrl", joinUrl);
-
     if (!id) throw new Error("Appointment must have an id");
     if(!speciality) throw new Error ("Appointment must have a speciality");
     if (!status) throw new Error("Appointment must have a status");

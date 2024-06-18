@@ -1,5 +1,5 @@
 import express from "express";
-// import requireAuth from "../utils/middleware/requireAuth.js";
+import { authenticateToken, authorizeRoles } from '../utils/middlewares/authMiddleware.js';
 // Import controllers
 import 
    { postAppointment, 
@@ -24,47 +24,46 @@ import makeExpressCallback from "../utils/makeExpressCallback.js";
 // create router
 const router = express.Router();
 
-// user middleware 
-// router.use(requireAuth);
+// Middleware to verify token authentication
+router.use(authenticateToken);
 
-console.log(typeof(postAppointment))
 // routes
 router
   .route("/specialties")
-  .post(makeExpressCallback(postSpeciality))
-  .get(makeExpressCallback(getSpecialities));
+  .post(authorizeRoles("specialist"),makeExpressCallback(postSpeciality))
+  .get(authorizeRoles("user", "specialist"),makeExpressCallback(getSpecialities));
 
 router
   .route("/specialties/:id")
-  .delete(makeExpressCallback(deleteSpeciality))
-  .get(makeExpressCallback(getSpecialityById))
-  .put(makeExpressCallback(updateASpeciality));
+  .delete(authorizeRoles("specialist"),makeExpressCallback(deleteSpeciality))
+  .get(authorizeRoles("user", "specialist"),makeExpressCallback(getSpecialityById))
+  .put(authorizeRoles("specialist"),makeExpressCallback(updateASpeciality));
 
 router.route("/users/:id")
-      .get(makeExpressCallback(getUser))
+      .get(authorizeRoles("user", "specialist"), makeExpressCallback(getUser))
   
 
 router.route("/users")
-      .get(makeExpressCallback(getUsers))
+      .get(authorizeRoles("specialist"),makeExpressCallback(getUsers))
 
 router.route("/specialists")
-      .get(makeExpressCallback(getSpecialists))
+      .get(authorizeRoles("user"),makeExpressCallback(getSpecialists))
 
 router.route("/specialists/:id")
-      .get(makeExpressCallback(getSpecialistById))
+      .get(authorizeRoles("user"), makeExpressCallback(getSpecialistById))
   
 router.route("/specialists/:id/schedule")
-      .get(makeExpressCallback(getSchedule))
-      .post(makeExpressCallback(postNewTimeSlots))
-      .put(makeExpressCallback(putScheduleSlot))
-      .delete(makeExpressCallback(deleteTimeSlot))
+      .get(authorizeRoles("user", "specialist"),makeExpressCallback(getSchedule))
+      .post(authorizeRoles("specialist"),makeExpressCallback(postNewTimeSlots))
+      .put(authorizeRoles("specialist"), makeExpressCallback(putScheduleSlot))
+      .delete(authorizeRoles("specialist"), makeExpressCallback(deleteTimeSlot))
   
   router.route("/appointments")
-  .post(makeExpressCallback(postAppointment))
-  .get(makeExpressCallback(getAppointments))
+  .post(authorizeRoles("user", "specialist"), makeExpressCallback(postAppointment))
+  .get(authorizeRoles("user", "specialist"), makeExpressCallback(getAppointments))
 
 router.route("/appointments/:id")
-      .delete(makeExpressCallback(deleteAppointment))
+      .delete(authorizeRoles("user", "specialist"), makeExpressCallback(deleteAppointment))
 
 
 

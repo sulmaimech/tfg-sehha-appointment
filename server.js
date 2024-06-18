@@ -11,7 +11,7 @@ const server = express();
 
 // Enable CORS for all routes
 server.use(cors({
-  origin: 'http://localhost:3001', // Allow requests from this origin
+  origin: process.env.CORS_URL, // Allow requests from this origin
   credentials: true, // Allow cookies to be sent with requests
 }));
 

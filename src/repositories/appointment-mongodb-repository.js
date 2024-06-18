@@ -6,6 +6,7 @@ import Schedule from "./models/ScheduleModel.js";
 import ScheduleSlot from "./models/ScheduleSlotModel.js";
 import APIFeatures from "../utils/apiFeature.js";
 import { createUser } from "../use-cases/index.js";
+import makeCreateSpecialist from "../use-cases/specialist/create-specialist.js";
 
 export default function makeMongodbRepository() {
   return {
@@ -77,7 +78,6 @@ export default function makeMongodbRepository() {
         if (!updatedSpeciality) {
           throw new Error("Failed to update the speciality");
         }
-        console.log("Updated Speciality: ", updatedSpeciality);
         return updatedSpeciality;
       } catch (error) {
         throw new Error("Error while updating a speciality: " + error.message);
@@ -109,16 +109,8 @@ export default function makeMongodbRepository() {
       try {
         // Use APIFeatures to use the filters, sort, pagination, etc
         const features = new APIFeatures(User.find(), query, [])
-        // .filter()
-        // .sort()
-        // .limitFields()
-        // .paginate();
-        console.log(features)
-
         const users = await features.execWithPopulatedSort()
 
-        console.log("Users: ", users)
-        // Check if the result is indeed an array as expected
         // Check if the result is indeed an array as expected
         if (!Array.isArray(users)) {
           throw new Error("Unexpected response type from the database");
@@ -154,9 +146,7 @@ export default function makeMongodbRepository() {
           email,
           phone
         };
-        console.log("Create ucser: ", user)
         const newUser = await User.create(user);
-        console.log("New User: ", newUser);
         return newUser;
       } catch (error) {
         throw new Error("Error while creating a User: " + error.message);
@@ -198,8 +188,6 @@ export default function makeMongodbRepository() {
         const specialists = await features.query;
 
         // Check if the result is indeed an array as expected
-        console.log("Specialists: ", specialists)
-
         return specialists.map(s => {
           const specialist = {
             id: s._doc._id,
@@ -210,7 +198,6 @@ export default function makeMongodbRepository() {
             email: s._doc.contactInfo.email,
             phone: s._doc.contactInfo.phone
           };
-          console.log("Specialist: ", specialist);
           return specialist;
         });
       } catch (error) {
@@ -246,9 +233,6 @@ export default function makeMongodbRepository() {
         if (!specialist) {
           throw new Error("Specialist not found");
         }
-
-        console.log("Specialist: ", specialist);
-
         return {
           id: specialist._id,
           firstName: specialist.firstName,
@@ -260,6 +244,30 @@ export default function makeMongodbRepository() {
       } catch (error) {
         // Throws an error which can be caught and handled by the caller
         throw new Error(`Error while retrieving a Specialist by ID (${id}): ${error.message}`);
+      }
+    },
+
+    createSpecialist: async ({ id, firstName, lastName, specialities, email, phone }) => {
+
+      try {
+
+        // create schedule for specialist
+        const schedule = await Schedule.create({ specialist: id });
+        const specialist = {
+          _id: id,
+          firstName,
+          lastName,
+          specialities,
+          contactInfo: {
+            email,
+            phone
+          },
+          schedule: schedule._id
+        };
+        const newSpecialist = await Specialist.create(specialist);
+        return newSpecialist;
+      } catch (error) {
+        throw new Error("Error while creating a Specialist: " + error.message);
       }
     },
 
@@ -275,15 +283,6 @@ getSpecialistSchedule: async ({ id, query }) => {
         },
       })
       .exec();
-
-    // Log the initial schedule with populated specialist
-    console.log("Initial schedule with populated specialist:", schedule);
-
-    if (!schedule) {
-      console.log("No schedule found for the provided ID.");
-      return null; // or appropriate response indicating no schedule found
-    }
-
     // Use API Features for further processing if needed
     const features = new APIFeatures(
       Schedule.findOne({ specialist: id })
@@ -326,14 +325,6 @@ getSpecialistSchedule: async ({ id, query }) => {
 
     schedule = await features.execWithPopulatedSort();
     schedule = schedule[0];
-
-    if (!schedule) {
-      console.log("No populated schedule found.");
-      return null;
-    }
-
-    console.log("Populated Schedule: ", schedule);
-
     // Process and return the structured schedule data
     return {
       id: schedule._id,
@@ -397,7 +388,6 @@ getSpecialistSchedule: async ({ id, query }) => {
 
     addNewTimeSlots: async ({ specialistId, slots }) => {
       try {
-        console.log("id: ", specialistId);
         let schedule = await Schedule.findOne({ specialist: specialistId })
           .populate({
             path: 'specialist',
@@ -465,9 +455,6 @@ getSpecialistSchedule: async ({ id, query }) => {
           return newSlot;
         })) : [];
 
-
-        console.log("New slot docs: ", newSlotDocs);
-
         // Add the new slot IDs to the schedule's slots array
         const newSlotIds = newSlotDocs.map(slotDoc => slotDoc._id);
         schedule.slots.push(...newSlotIds);
@@ -505,8 +492,6 @@ getSpecialistSchedule: async ({ id, query }) => {
             },
           });
 
-        console.log("Repopulated Schedule: ", schedule);
-
         return {
           id: schedule._id,
           specialist: {
@@ -517,7 +502,6 @@ getSpecialistSchedule: async ({ id, query }) => {
             phone: schedule.specialist.contactInfo.phone,
             specialities: schedule.specialist.specialities ? schedule.specialist.specialities.map(
               speciality => {
-                console.log("Speciality @ return: ", speciality);
                 return {
                   id: speciality._id,
                   name: speciality.name,
@@ -527,9 +511,6 @@ getSpecialistSchedule: async ({ id, query }) => {
             ) : []
           },
           slots: schedule.slots ? schedule.slots.map(slot => {
-            console.log("Slot: ", slot);
-            console.log("Slot.appointment: ", slot.appointment);
-            slot.appointment ? console.log("slot.appointment.speciality: ", slot.appointment.speciality) : console.log()
             return {
               slotId: slot._id,
               startTime: slot.startTime,
@@ -544,7 +525,6 @@ getSpecialistSchedule: async ({ id, query }) => {
                   phone: schedule.specialist.contactInfo.phone,
                   specialities: schedule.specialist.specialities ? schedule.specialist.specialities.map(
                     speciality => {
-                      console.log("Speciality @ return: ", speciality);
                       return {
                         id: speciality._id,
                         name: speciality.name,
@@ -609,11 +589,6 @@ getSpecialistSchedule: async ({ id, query }) => {
     },
     updateSlot: async ({ specialistId, slotId, startTime, endTime }) => {
       try {
-        console.log("id: ", specialistId)
-        console.log("slotId: ", slotId)
-        console.log("startTime: ", startTime)
-        console.log("endTime: ", endTime)
-
         // Find and update the slot
         const updatedSlot = await ScheduleSlot.findByIdAndUpdate(
           slotId,
@@ -624,9 +599,6 @@ getSpecialistSchedule: async ({ id, query }) => {
         if (!updatedSlot) {
           throw new Error('Slot not found');
         }
-
-        console.log(`Slot ${slotId} updated successfully.`);
-        console.log("This is the slot: ", updatedSlot)
 
         return null
       } catch (error) {
@@ -644,12 +616,6 @@ getSpecialistSchedule: async ({ id, query }) => {
           // Slot is already occupied, throw an error
           throw new Error(`Slot with ID ${slotId} is already occupied.`);
         }
-
-        console.log("User Id: ", userId);
-        console.log("Specialist Id: ", specialistId);
-        console.log("Speciality Id: ", specialityId);
-        console.log("Slot Id: ", slotId);
-
         // If the slot is not occupied, proceed to create a new appointment
         const appointment = await Appointment.create({
           user: userId,
@@ -671,7 +637,7 @@ getSpecialistSchedule: async ({ id, query }) => {
         user.appointments.push(appointment._id);
         await user.save();
 
-        return { id: appointment._id, userId };
+        return { id: appointment._id, userId, specialistId };
       } catch (error) {
         // Rethrow the error to allow the caller to handle it.
         throw new Error(`Failed to create appointment: ${error.message}`);
@@ -710,56 +676,37 @@ getSpecialistSchedule: async ({ id, query }) => {
           .sort()
 
         let appointments = await features.execWithPopulatedSort();
-        console.log("-------------------------------------------------")
-        console.log("-------------------------------------------------")
-
-        console.log("Appointments: ", appointments);
 
         if (query.from) {
-          console.log("Query start time:", query.from);
           const fromFilter = new Date(query.from);
-          console.log("From filter:", fromFilter); // Logging the standardized ISO string for clarity
-
           appointments = appointments.filter(appointment => {
             // Check if `appointment.slot` and `appointment.slot.startTime` exist
             if (!appointment.slot || !appointment.slot.startTime) {
-              console.log("Skipping appointment due to missing slot or slot.startTime");
               return false; // Skip this appointment if it doesn't have a slot or slot.startTime
             }
-
-            console.log("Appointment start time:", appointment.slot.startTime);
             // Convert to Date object for comparison
             const appointmentStartTime = new Date(appointment.slot.startTime);
-            console.log(appointmentStartTime)
             // Compare the appointment start time with the filter
-            console.log("Compare times: ", appointmentStartTime >= fromFilter)
             return appointmentStartTime >= fromFilter;
           });
 
         }
 
         if (query.to) {
-          console.log("Query end time:", query.to);
           const toFilter = new Date(query.to);
-          console.log("End time filter:", toFilter.toISOString()); // Use ISO string for clarity
 
           appointments = appointments.filter(appointment => {
             // Check if `appointment.slot` and `appointment.slot.endTime` exist
             if (!appointment.slot || !appointment.slot.startTime) {
-              console.log("Skipping appointment due to missing slot or slot.endTime");
               return false; // Skip this appointment if it doesn't have a slot or slot.endTime
             }
-
-            console.log("Appointment end time:", appointment.slot.startTime);
             // Convert to Date object for comparison
             const appointmentStartTime = new Date(appointment.slot.startTime);
             // Compare the appointment end time with the filter
-            console.log("Compare times: ", appointmentStartTime <= toFilter)
             return appointmentStartTime <= toFilter;
           });
 
         }
-        console.log("Appointments: ", appointments);
         return appointments? appointments.map(appointment => {
           return {
             id: appointment.slot._id.toString(),
@@ -810,7 +757,6 @@ getSpecialistSchedule: async ({ id, query }) => {
         const appointment = await Appointment.findByIdAndUpdate(id, { status: "cancelled" }, { new: true });
         return appointment;
       } catch (error) {
-        console.log("Error while canceling appointment", error);
       }
     },
     updateAppointment: async ({ id, status }) => {
