@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sehha-appointment
+  namespace: sehha-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sehha-appointment
+  template:
+    metadata:
+      labels:
+        app: sehha-appointment
+    spec:
+      containers:
+      - name: sehha-appointment
+        image: sulmaimech/sehha-appointment:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DATABASE
+          value: "mongodb+srv://sehha-appointment:<password>@sehha-appointment-clust.0i73oe0.mongodb.net/appointments?retryWrites=true&w=majority&appName=sehha-appointment-cluster"
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sehha-secrets
+              key: DATABASE_PASSWORD
+        - name: PORT
+          value: "3000"
+        - name: CLOUDAMQP_URL
+          valueFrom:
+            secretKeyRef:
+              name: sehha-secrets
+              key: CLOUDAMQP_URL
+        - name: CORS_URL
+          value: "*"
+        - name: PUBLIC_KEY
+          valueFrom:
+            secretKeyRef:
+              name: sehha-secrets
+              key: PUBLIC_KEY
