@@ -13,7 +13,8 @@ import {createNewAppointment,
     updateSlot, 
     removeTimeSlot,
     cancelAppointment, 
-    listAllAppointments
+    listAllAppointments, 
+    retrieveAppointment
 } from "../use-cases/index.js";
 
 import makePostSpeciality from "./speciality/post-speciality.js";
@@ -32,6 +33,7 @@ import makeDeleteTimeSlot from "./schedule/delete-time-slot.js";
 import makePostAppointment from "./appointment/post-appointment.js";
 import makeDeleteAppointment from "./appointment/delete-appointment.js";
 import makeGetAppointments from "./appointment/get-appointments.js";
+import makeGetAppointment from "./appointment/get-appointment.js";
 
 const postAppointment = makePostAppointment({ createNewAppointment });
 const postSpeciality = makePostSpeciality({ addNewSpeciality });
@@ -49,6 +51,7 @@ const putScheduleSlot = makePutScheduleSlot({updateSlot})
 const deleteTimeSlot = makeDeleteTimeSlot({removeTimeSlot})
 const deleteAppointment = makeDeleteAppointment({cancelAppointment})
 const getAppointments = makeGetAppointments({listAllAppointments})
+const getAppointment = makeGetAppointment({retrieveAppointment})
 
 const appointmentController = Object.freeze({
     postAppointment,
@@ -66,7 +69,8 @@ const appointmentController = Object.freeze({
     putScheduleSlot, 
     deleteTimeSlot, 
     deleteAppointment, 
-    getAppointments
+    getAppointments, 
+    getAppointment
 });
 
 export default appointmentController;
@@ -85,6 +89,7 @@ export { postAppointment,
     putScheduleSlot, 
     deleteTimeSlot, 
     deleteAppointment, 
-    getAppointments
+    getAppointments, 
+    getAppointment
 
 };

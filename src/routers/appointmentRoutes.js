@@ -17,7 +17,8 @@ import
     putScheduleSlot,
     deleteTimeSlot, 
     deleteAppointment,
-    getAppointments
+    getAppointments, 
+    getAppointment
    } from "../controllers/index.js";
 import makeExpressCallback from "../utils/makeExpressCallback.js";
 
@@ -50,7 +51,7 @@ router.route("/specialists")
       .get(authorizeRoles("user"),makeExpressCallback(getSpecialists))
 
 router.route("/specialists/:id")
-      .get(authorizeRoles("user"), makeExpressCallback(getSpecialistById))
+      .get(authorizeRoles("user", "specialist"), makeExpressCallback(getSpecialistById))
   
 router.route("/specialists/:id/schedule")
       .get(authorizeRoles("user", "specialist"),makeExpressCallback(getSchedule))
@@ -63,8 +64,7 @@ router.route("/specialists/:id/schedule")
   .get(authorizeRoles("user", "specialist"), makeExpressCallback(getAppointments))
 
 router.route("/appointments/:id")
+      .get(authorizeRoles("user", "specialist"), makeExpressCallback(getAppointment))
       .delete(authorizeRoles("user", "specialist"), makeExpressCallback(deleteAppointment))
-
-
 
 export default router;

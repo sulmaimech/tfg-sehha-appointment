@@ -18,6 +18,7 @@ import makeRemoveTimeSlot from './schedule/remove-time-slot.js'
 import makeCreateNewAppointment from './appointments/create-new-appointment.js'
 import makeCancelAppointment from './appointments/cancel-appointment.js'
 import makeListAllAppointments from './appointments/list-all-appointments.js'
+import makeRetrieveAppointment from './appointments/retrieve-appointment.js';
 
 
 const addNewSpeciality = makeAddNewSpeciality({appointmentRepository})
@@ -38,6 +39,7 @@ const updateSlot = makeUpdateSlot({appointmentRepository})
 const removeTimeSlot = makeRemoveTimeSlot({appointmentRepository})
 const cancelAppointment = makeCancelAppointment({appointmentRepository})
 const listAllAppointments = makeListAllAppointments({appointmentRepository})
+const retrieveAppointment = makeRetrieveAppointment({appointmentRepository})
 
 const appointmentService = Object.freeze({
     createNewAppointment, 
@@ -58,6 +60,7 @@ const appointmentService = Object.freeze({
     removeTimeSlot,
     cancelAppointment,
     listAllAppointments,
+    retrieveAppointment
 }); 
 
 export default appointmentService;
@@ -80,5 +83,6 @@ export {
     updateSlot, 
     removeTimeSlot, 
     cancelAppointment,
-    listAllAppointments
+    listAllAppointments, 
+    retrieveAppointment
     };

@@ -6,6 +6,7 @@ metadata:
 spec:
   selector:
     app: sehha-appointment
+  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 80
